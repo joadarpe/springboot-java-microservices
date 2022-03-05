@@ -2,6 +2,7 @@ package com.joadarpe.microservices.currencyexchangeservice.controllers;
 
 import com.joadarpe.microservices.currencyexchangeservice.model.CurrencyExchange;
 import com.joadarpe.microservices.currencyexchangeservice.repositories.CurrencyExchangeRepository;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,6 +21,7 @@ public class CurrencyExchangeController {
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
     @RateLimiter(name = "currency-exchange", fallbackMethod = "currencyExchangeFallback")
+    @Bulkhead(name = "currency-exchange", fallbackMethod = "currencyExchangeFallback")
     public CurrencyExchange retrieveExchangeValue(
             @PathVariable String from,
             @PathVariable String to) {
