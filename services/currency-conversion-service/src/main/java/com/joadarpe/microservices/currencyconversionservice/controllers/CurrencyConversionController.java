@@ -2,6 +2,7 @@ package com.joadarpe.microservices.currencyconversionservice.controllers;
 
 import com.joadarpe.microservices.currencyconversionservice.model.CurrencyConversion;
 import com.joadarpe.microservices.currencyconversionservice.proxies.CurrencyExchangeProxy;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +57,14 @@ public class CurrencyConversionController {
     }
 
     @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
+    @CircuitBreaker(name = "currency-conversion", fallbackMethod = "currencyConversionFallback")
     public CurrencyConversion calculateCurrencyConversionFeign(
             @PathVariable String from,
             @PathVariable String to,
             @PathVariable BigDecimal quantity
     ) {
 
+        logger.info("Calling currency-exchange wit feign at load balancer");
         CurrencyConversion currencyConversion = proxy.retrieveExchangeValue(from, to);
 
         return new CurrencyConversion(currencyConversion.getId(),
