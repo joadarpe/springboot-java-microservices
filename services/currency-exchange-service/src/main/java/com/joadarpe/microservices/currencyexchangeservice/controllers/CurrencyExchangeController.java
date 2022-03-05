@@ -2,6 +2,7 @@ package com.joadarpe.microservices.currencyexchangeservice.controllers;
 
 import com.joadarpe.microservices.currencyexchangeservice.model.CurrencyExchange;
 import com.joadarpe.microservices.currencyexchangeservice.repositories.CurrencyExchangeRepository;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ public class CurrencyExchangeController {
     private Environment environment;
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
+    @RateLimiter(name = "currency-exchange", fallbackMethod = "currencyExchangeFallback")
     public CurrencyExchange retrieveExchangeValue(
             @PathVariable String from,
             @PathVariable String to) {
@@ -32,6 +34,12 @@ public class CurrencyExchangeController {
 
         return currencyExchange;
 
+    }
+
+    private CurrencyExchange currencyExchangeFallback(String from, String to, RuntimeException e) {
+        var result = new CurrencyExchange();
+        result.setEnvironment(String.format("To many request to currency-exchange service %s", e.getLocalizedMessage()));
+        return result;
     }
 
 }
