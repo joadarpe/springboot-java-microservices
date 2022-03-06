@@ -1,11 +1,30 @@
 version: "3.7"
 
 services:
+  # Message broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    mem_reservation: 300m
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - currency-network
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
   # Zipkin server
   zipkin-server:
     image: openzipkin/zipkin:2.23
     container_name: zipkin-server
     mem_reservation: 300m
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
     ports:
       - "9411:9411"
     networks:
@@ -28,9 +47,13 @@ services:
     mem_reservation: 700m
     depends_on:
       - naming-server
+      - rabbitmq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
     ports:
       - "8765:8765"
     networks:
@@ -43,9 +66,13 @@ services:
     mem_reservation: 700m
     depends_on:
       - naming-server
+      - rabbitmq
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
     ports:
       - "8000:8000"
     networks:
@@ -58,10 +85,14 @@ services:
     mem_reservation: 700m
     depends_on:
       - naming-server
+      - rabbitmq
       - currency-exchange
     environment:
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
       SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      SPRING_ZIPKIN_SENDER_TYPE: rabbit
+      SPRING_RABBITMQ_HOST: rabbitmq
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
     ports:
       - "8100:8100"
     networks:
@@ -69,3 +100,6 @@ services:
 
 networks:
   currency-network:
+
+volumes:
+  rabbitmq_data:
