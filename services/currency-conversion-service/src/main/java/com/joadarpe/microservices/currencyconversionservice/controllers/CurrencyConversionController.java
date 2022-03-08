@@ -31,7 +31,7 @@ public class CurrencyConversionController {
             @PathVariable String to,
             @PathVariable BigDecimal quantity
     ) {
-
+        logger.info("calculateCurrencyConversionRestTemplate called with {} to {} with {}", from, to, quantity);
         HashMap<String, String> uriVariables = new HashMap<>();
         uriVariables.put("from", from);
         uriVariables.put("to", to);
@@ -63,7 +63,7 @@ public class CurrencyConversionController {
             @PathVariable String to,
             @PathVariable BigDecimal quantity
     ) {
-
+        logger.info("calculateCurrencyConversionFeign called with {} to {} with {}", from, to, quantity);
         logger.info("Calling currency-exchange wit feign at load balancer");
         CurrencyConversion currencyConversion = proxy.retrieveExchangeValue(from, to);
 
