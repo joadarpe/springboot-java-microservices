@@ -23,7 +23,7 @@ spec:
         app: currency-exchange
     spec:
       containers:
-      - image: sjm-currency-exchange-service-kubernetes:0.0.1-SNAPSHOT
+      - image: sjm-currency-exchange-service-kubernetes:0.0.2-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: sjm-currency-exchange-service-kubernetes
       restartPolicy: Always

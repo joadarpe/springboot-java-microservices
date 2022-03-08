@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.joadarpe.microservices</groupId>
 	<artifactId>currency-conversion-service-kubernetes</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>currency-conversion-service-kubernetes</name>
 	<description>Currency conversion service in kubernetes</description>
 	<properties>

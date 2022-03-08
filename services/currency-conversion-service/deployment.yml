@@ -23,9 +23,12 @@ spec:
         app: currency-conversion
     spec:
       containers:
-      - image: sjm-currency-conversion-service-kubernetes:0.0.1-SNAPSHOT
+      - image: sjm-currency-conversion-service-kubernetes:0.0.2-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: sjm-currency-conversion-service-kubernetes
+        env:
+          - name: CURRENCY_EXCHANGE_SERVICE_URL
+            value: http://currency-exchange
       restartPolicy: Always
 ---
 apiVersion: v1

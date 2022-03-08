@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.joadarpe.microservices</groupId>
 	<artifactId>currency-exchange-service-kubernetes</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>currency-exchange-service-kubernetes</name>
 	<description>Currency exchange service in kubernetes</description>
 	<properties>
