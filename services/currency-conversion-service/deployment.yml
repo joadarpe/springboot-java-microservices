@@ -26,6 +26,14 @@ spec:
       - image: sjm-currency-conversion-service-kubernetes:0.0.2-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: sjm-currency-conversion-service-kubernetes
+        readinessProbe:
+          httpGet:
+            port: 8100
+            path: /actuator/health/readiness
+        livenessProbe:
+          httpGet:
+            port: 8100
+            path: /actuator/health/liveness
         envFrom:
           - configMapRef:
               name: currency-conversion
