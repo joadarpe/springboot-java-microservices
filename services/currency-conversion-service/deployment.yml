@@ -26,9 +26,9 @@ spec:
       - image: sjm-currency-conversion-service-kubernetes:0.0.2-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: sjm-currency-conversion-service-kubernetes
-        env:
-          - name: CURRENCY_EXCHANGE_SERVICE_URL
-            value: http://currency-exchange
+        envFrom:
+          - configMapRef:
+              name: currency-conversion
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -47,3 +47,11 @@ spec:
     app: currency-conversion
   sessionAffinity: None
   type: LoadBalancer
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  CURRENCY_EXCHANGE_SERVICE_URL: http://currency-exchange
+metadata:
+  name: currency-conversion
+  namespace: default
