@@ -1,0 +1,48 @@
+# Spring configs
+spring:
+  # App config
+  application:
+    name: currency-exchange
+  # JPA config
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+  # Datasource config
+  datasource:
+    url: jdbc:h2:mem:currency.db
+  # H2 config
+  h2:
+    console:
+      enabled: true
+  # Sleuth for tracing
+  sleuth:
+    sampler:
+      probability: 1.0
+
+# Server config
+server:
+  port: 8000
+
+# Resilience config
+resilience4j:
+  ratelimiter:
+    instances:
+      currency-exchange:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+  bulkhead:
+    instances:
+      currency-exchange:
+        maxConcurrentCalls: 2
+
+# Actuator management config
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

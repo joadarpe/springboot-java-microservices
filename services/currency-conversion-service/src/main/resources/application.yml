@@ -1,0 +1,39 @@
+# Spring configs
+spring:
+  # App config
+  application:
+    name: currency-conversion
+  # Sleuth for tracing
+  sleuth:
+    sampler:
+      probability: 1.0
+
+# Server config
+server:
+  port: 8100
+
+# Resilience config
+resilience4j:
+  retry:
+    instances:
+      currency-conversion:
+        maxAttempts: 3
+        waitDuration: 1s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+  circuitbreaker:
+    instances:
+      currency-conversion:
+        failureRateThreshold: 90
+
+# Actuator management config
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
